@@ -53,6 +53,7 @@ class Physical:
 
 class Man :
     speed = 500
+    delme = 1
     target = None
 
     def __init__(self, screen, coordinates):
