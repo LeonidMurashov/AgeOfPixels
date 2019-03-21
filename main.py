@@ -2,7 +2,7 @@ import pygame
 import pygame.locals
 from pygame.locals import Rect
 import os
-import math
+
 
 SCREEN_RECT = Rect(0, 0, 1920, 1080)
 IMAGES_FOLDER = 'images'
@@ -53,9 +53,8 @@ class Physical:
 
 class Man :
     speed = 500
-    delme = 1
     target = None
-    loh = 9
+
     def __init__(self, screen, coordinates):
         self.screen = screen
         self.image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'man.png'))
