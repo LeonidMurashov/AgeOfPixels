@@ -31,10 +31,11 @@ class World:
         for obj in self.objects:
             obj.render()
 
-    def LeftClick(self, c):
-        pass
+    def left_click(self, mouse_pos):
+        for obj in self.objects:
+            obj.go_to(mouse_pos)
 
-    def RightClick(self, c):
+    def right_click(self, c):
         pass
 
 '''
@@ -100,10 +101,10 @@ def main():
                      event.key == pygame.locals.K_ESCAPE):
                 return
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                man.go_to(pygame.mouse.get_pos())
-                for m in men:
-                    m.go_to(pygame.mouse.get_pos())
+                world.left_click(pygame.mouse.get_pos())
 
+        world.step(elapsed_time)
+        world.render()
 
         pygame.display.flip()
         pygame.time.delay(1)
