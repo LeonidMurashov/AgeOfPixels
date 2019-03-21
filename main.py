@@ -11,6 +11,32 @@ PIXEL_SCALE = 10
 WORLD_GRID = [[ 0 for i in range(100)] for j in range(100)]
 WORLD_GRID_SIZE = PIXEL_SCALE
 
+
+class World:
+    objects = []
+
+    def __init__(self, screen):
+
+        self.objects = [
+            Man(screen, [i * 10, i * 10]) for i in range(10)
+        ]
+        self.objects.append(Man(screen, [200, 200]))
+
+    def step(self, elapsed_time):
+        for obj in self.objects:
+            obj.step(elapsed_time)
+
+    def render(self):
+        self.objects.sort(key=lambda x: x.get_y())
+        for obj in self.objects:
+            obj.render()
+
+    def LeftClick(self, c):
+        pass
+
+    def RightClick(self, c):
+        pass
+
 '''
 class Physical:
     def __init__(self, bbox : Rect):
@@ -56,16 +82,15 @@ class Man :
     def go_to(self, target):
         self.target = target
 
+    def get_y(self):
+        return self.coordinates[1]
+
 
 def main():
     screen = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN)
     clock = pygame.time.Clock()
 
-    men = [
-        Man(screen, [i * 10, i * 10]) for i in range(10)
-    ]
-    man = Man(screen, [200, 200])
-
+    world = World(screen)
     while True:
         elapsed_time = clock.tick_busy_loop() / 1000
 
@@ -79,12 +104,6 @@ def main():
                 for m in men:
                     m.go_to(pygame.mouse.get_pos())
 
-        man.step(elapsed_time)
-        man.render()
-
-        for m in men:
-            m.step(elapsed_time)
-            m.render()
 
         pygame.display.flip()
         pygame.time.delay(1)
