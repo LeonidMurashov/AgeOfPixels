@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 
-
 class Physical(ABC):
     @abstractmethod
     def step(self):
