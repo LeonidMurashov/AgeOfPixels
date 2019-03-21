@@ -54,7 +54,7 @@ class Physical:
 class Man :
     speed = 500
     target = None
-
+    loh = 9
     def __init__(self, screen, coordinates):
         self.screen = screen
         self.image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'man.png'))
