@@ -5,6 +5,7 @@ import os
 import math
 from abc import ABC, abstractmethod
 from copy import deepcopy
+from factory import *
 
 
 SCREEN_RECT = Rect(0, 0, 1920, 1080)
@@ -47,7 +48,6 @@ class World:
         self.objects = [
             Man(screen, self, [300 + i * 50, 300 + j * 50]) for i in range(14) for j in range(14)
         ]
-        self.objects.append(Man(screen, self, [200, 200]))
         c = screen.get_size()
         self.bbox = CircleBBox(c[0] / 2, c[1] / 2, c[1] / 2)
 
@@ -95,7 +95,7 @@ class GameObject(ABC):
 
 
 class Man(GameObject):
-    speed = 500
+    speed = 250
     target = None
 
     def __init__(self, screen, world, coordinates):
@@ -109,7 +109,7 @@ class Man(GameObject):
             )
         )
         self.world = world
-        self.bbox = CircleBBox(coordinates[0], coordinates[1], 10)
+        self.bbox = CircleBBox(coordinates[0], coordinates[1], 3)
 
     def render(self):
         self.screen.blit(self.image, (self.bbox.x, self.bbox.y))
@@ -168,18 +168,37 @@ def process_events(world: World, selection_rect: SelectionRect):
 
     return True
 
-'''            if selection_rect.rect.w < 0:
-                selection_rect.rect.x += selection_rect.rect.w
-                selection_rect.rect.w *= -1
-            if selection_rect.rect.h < 0:
-                selection_rect.rect.y += selection_rect.rect.h
-                selection_rect.rect.h *= -1'''
+
+class Menu:
+    coordinates = []
+    coordinates.append(0)
+    coordinates.append(800)
+
+    def __init__(self, screen):
+        self.main_image = pygame.image.load('images/menu.bmp')
+        self.screen = screen
+        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
+
+    def render(self):
+        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
+
+    def get_information(self, game_object):
+        
+
+
 def main():
     screen = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN)
     pygame.display.set_caption("AgeOfPixels")
-    clock = pygame.time.Clock()
 
+    #create fon
+    grass = pygame.image.load('images/sand.jpg')
+    screen.blit(grass, (0, 0))
+
+
+    clock = pygame.time.Clock()
     world = World(screen)
+    menu = Menu(screen)
+
     selection_rect = SelectionRect()
     while True:
         elapsed_time = clock.tick_busy_loop() / 1000
@@ -190,6 +209,7 @@ def main():
 
         world.step(elapsed_time)
         world.render()
+        menu.render()
 
         if selection_rect.is_active:
             if selection_rect.rect.w < 0:
@@ -205,7 +225,7 @@ def main():
 
         pygame.display.flip()
         pygame.time.delay(1)
-        screen.fill((255, 255, 255))
+        screen.blit(grass, (0, 0))
 
 
 if __name__ == "__main__":

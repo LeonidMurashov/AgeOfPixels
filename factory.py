@@ -7,11 +7,6 @@ import random
 import time
 
 
-
-class Physical(ABC):
-    pass
-
-
 class Renderable(ABC):
     coordinates: list
     image: pygame.Surface
@@ -50,15 +45,18 @@ class Car(Renderable):
 
 
 class Building(Renderable):
-    image = pygame.image.load('images/дом.jpg')
+    image : pygame.Surface
     height = image.get_height()
 
-    def BuildIt(self):
+    def __init__(self, screen):
+        self.screen = screen
+
+    def build_it(self):
         for i in range(self.height):
             crop_surf = pygame.transform.chop(self.image, (0, 0, 0, self.height - i))
-            screen.blit(crop_surf, (440, 440 - i))
+            self.screen.blit(crop_surf, (440, 440 - i))
             pygame.display.flip()
-            screen.fill((255, 255, 255))
+            self.screen.fill((255, 255, 255))
 
 
 class ManWorker(Man):
@@ -92,6 +90,7 @@ class BuildingWarrior(Building):
 
 
 class BuildingWorker(Building):
+
     def get_ore(self):
         pass
 
