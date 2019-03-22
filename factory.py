@@ -1,3 +1,7 @@
+from Menu import *
+from Constants import *
+from copy import deepcopy
+from BBox import *
 from abc import ABC
 import pygame
 from pygame.locals import Rect
@@ -7,7 +11,7 @@ import random
 import time
 
 
-class Renderable(ABC):
+class GameObject(ABC):
     coordinates: list
     image: pygame.Surface
     screen: pygame.Surface
@@ -16,17 +20,38 @@ class Renderable(ABC):
         self.screen.blit(self.image, self.coordinates)
 
 
-class Man(Renderable):
-    speed = 500
+class Man(GameObject):
+    speed = 250
     target = None
 
+    def __init__(self, screen, world, coordinates):
+        self.screen = screen
+        self.image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'man.png'))
+        self.image = pygame.transform.scale(
+            self.image,
+            (
+                self.image.get_size()[0] * PIXEL_SCALE,
+                self.image.get_size()[1] * PIXEL_SCALE
+            )
+        )
+        self.world = world
+        self.bbox = CircleBBox(coordinates[0], coordinates[1], 3)
+
+    def render(self):
+        self.screen.blit(self.image, (self.bbox.x, self.bbox.y))
+
     def animate_go_to(self, delta_t):
-        self.coordinates[0] += self.speed * math.sin(
-            math.atan2(self.target[0] - self.coordinates[0],
-                       self.target[1] - self.coordinates[1])) * delta_t
-        self.coordinates[1] += self.speed * math.cos(
-            math.atan2(self.target[0] - self.coordinates[0],
-                       self.target[1] - self.coordinates[1])) * delta_t
+        new_bbox = deepcopy(self.bbox)
+        new_bbox.x += self.speed * math.sin(
+            math.atan2(self.target[0] - self.bbox.x,
+                       self.target[1] - self.bbox.y)) * delta_t
+        new_bbox.y += self.speed * math.cos(
+            math.atan2(self.target[0] - self.bbox.x,
+                       self.target[1] - self.bbox.y)) * delta_t
+
+        # Check for collisions with others
+        if self.world.request_move(self, new_bbox):
+            self.bbox = new_bbox
 
     def step(self, delta_t):
         if self.target is not None:
@@ -36,17 +61,20 @@ class Man(Renderable):
         self.target = target
 
     def get_y(self):
-        return self.coordinates[1]
+        return self.bbox.y
+
+    def get_bbox(self):
+        return self.bbox
 
 
-class Car(Renderable):
+class Car(GameObject):
     speed: int
     target = None
 
 
-class Building(Renderable):
-    image : pygame.Surface
-    height = image.get_height()
+class Building(GameObject):
+    image: pygame.Surface
+    # height = image.get_height()
 
     def __init__(self, screen):
         self.screen = screen
