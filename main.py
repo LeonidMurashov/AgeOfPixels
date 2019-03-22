@@ -18,7 +18,65 @@ WORLD_GRID_SIZE = PIXEL_SCALE
 
 class SelectionRect:
     rect: pygame.Rect = pygame.Rect((0, 0, 0, 0))
-    is_active = False
+    __is_active = False
+    __is_finished = False
+
+    tracked_corner = [0, 0]
+    '''
+    how tracked corner is represented 
+     TT | FT
+    --------
+     TF | FF
+    '''
+
+    def start_selection(self, pos):
+        self.__is_active = True
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.rect.h = 1
+        self.rect.w = 1
+        self.tracked_corner = [0, 0]
+
+    def finish_selection(self):
+        self.__is_active = False
+        self.__is_finished = True
+
+    def drag_selection(self, pos):
+        self.rect.w = pos[0] - self.rect.x
+        self.rect.h = pos[1] - self.rect.y
+
+        if self.rect.w < 0 and not self.tracked_corner[0]:
+            self.tracked_corner[0] ^= 1
+        if self.rect.w > 0 and self.tracked_corner[0]:
+            self.tracked_corner[0] ^= 1
+        if self.rect.h < 0 and not self.tracked_corner[1]:
+            self.tracked_corner[1] ^= 1
+        if self.rect.h > 0 and self.tracked_corner[1]:
+            self.tracked_corner[1] ^= 1
+
+    def get_rect(self):
+        rect = deepcopy(self.rect)
+        if self.tracked_corner[0]:
+            rect.x += self.rect.w
+            rect.w *= -1
+        if self.tracked_corner[1]:
+            rect.y += self.rect.h
+            rect.h *= -1
+        return rect
+
+    def is_selection_finished(self):
+        return self.__is_finished
+
+    def is_selection_active(self):
+        return self.__is_active
+
+    def mark_as_used(self):
+        self.__is_finished = False
+
+    def render(self, screen):
+        s = pygame.Surface((self.get_rect().w, self.get_rect().h), pygame.SRCALPHA)
+        s.fill((0, 0, 255, 128))
+        screen.blit(s, (self.get_rect().x, self.get_rect().y))
 
 
 class CircleBBox:
@@ -149,22 +207,15 @@ def process_events(world: World, selection_rect: SelectionRect):
             return False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                selection_rect.is_active = True
-                selection_rect.rect.x = event.pos[0]
-                selection_rect.rect.y = event.pos[1]
-                selection_rect.rect.h = 1
-                selection_rect.rect.w = 1
+                selection_rect.start_selection(event.pos)
                 world.left_click(event.pos)
             elif event.button == 3:
                 world.right_click(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
-                selection_rect.is_active = False
-                selection_rect.rect.h = event.pos[1] - selection_rect.rect.y
-                selection_rect.rect.w = event.pos[0] - selection_rect.rect.x
+                selection_rect.finish_selection()
         elif event.type == pygame.MOUSEMOTION:
-            selection_rect.rect.h = event.pos[1] - selection_rect.rect.y
-            selection_rect.rect.w = event.pos[0] - selection_rect.rect.x
+            selection_rect.drag_selection(event.pos)
 
     return True
 
@@ -184,7 +235,6 @@ class Menu:
 
     def get_information(self, game_object):
         
-
 
 def main():
     screen = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN)
@@ -211,17 +261,12 @@ def main():
         world.render()
         menu.render()
 
-        if selection_rect.is_active:
-            if selection_rect.rect.w < 0:
-                selection_rect.rect.x += selection_rect.rect.w
-                selection_rect.rect.w *= -1
-            if selection_rect.rect.h < 0:
-                selection_rect.rect.y += selection_rect.rect.h
-                selection_rect.rect.h *= -1
+        if selection_rect.is_selection_active():
+            selection_rect.render(screen)
 
-            s = pygame.Surface((selection_rect.rect.w, selection_rect.rect.h), pygame.SRCALPHA)
-            s.fill((0, 0, 255, 128))
-            screen.blit(s, (selection_rect.rect.x, selection_rect.rect.y))
+        #if selection_rect.is_selection_finished():
+        #    world.select_objects(selection_rect)
+        #    selection_rect.mark_as_used()
 
         pygame.display.flip()
         pygame.time.delay(1)
