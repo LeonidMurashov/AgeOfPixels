@@ -45,7 +45,7 @@ class Car(Renderable):
 
 
 class Building(Renderable):
-    image : pygame.Surface
+    image: pygame.Surface
     height = image.get_height()
 
     def __init__(self, screen):

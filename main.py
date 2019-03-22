@@ -5,7 +5,6 @@ import os
 import math
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from factory import *
 
 
 SCREEN_RECT = Rect(0, 0, 1920, 1080)
@@ -199,6 +198,23 @@ class Man(GameObject):
         return self.bbox
 
 
+class Menu:
+    coordinates = list()
+    coordinates.append(0)
+    coordinates.append(800)
+
+    def __init__(self, screen):
+        self.main_image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'menu.bmp'))
+        self.screen = screen
+        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
+
+    def render(self):
+        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
+
+    def get_information(self, game_object):
+        pass
+
+
 def process_events(world: World, selection_rect: SelectionRect):
     for event in pygame.event.get():
         if event.type == pygame.locals.QUIT or \
@@ -220,30 +236,12 @@ def process_events(world: World, selection_rect: SelectionRect):
     return True
 
 
-class Menu:
-    coordinates = []
-    coordinates.append(0)
-    coordinates.append(800)
-
-    def __init__(self, screen):
-        self.main_image = pygame.image.load('images/menu.bmp')
-        self.screen = screen
-        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
-
-    def render(self):
-        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
-
-    def get_information(self, game_object):
-        
-
 def main():
     screen = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN)
     pygame.display.set_caption("AgeOfPixels")
 
-    #create fon
+    # Create background
     grass = pygame.image.load('images/sand.jpg')
-    screen.blit(grass, (0, 0))
-
 
     clock = pygame.time.Clock()
     world = World(screen)
@@ -264,9 +262,9 @@ def main():
         if selection_rect.is_selection_active():
             selection_rect.render(screen)
 
-        #if selection_rect.is_selection_finished():
-        #    world.select_objects(selection_rect)
-        #    selection_rect.mark_as_used()
+        # if selection_rect.is_selection_finished():
+        #     world.select_objects(selection_rect)
+        #     selection_rect.mark_as_used()
 
         pygame.display.flip()
         pygame.time.delay(1)
