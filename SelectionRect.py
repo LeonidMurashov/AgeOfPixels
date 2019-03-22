@@ -3,7 +3,7 @@ from copy import deepcopy
 
 
 class SelectionRect:
-    rect: pygame.Rect = pygame.Rect((0, 0, 0, 0))
+    _rect: pygame.Rect = pygame.Rect((0, 0, 0, 0))
     __is_active = False
     __is_finished = False
 
@@ -17,10 +17,10 @@ class SelectionRect:
 
     def start_selection(self, pos):
         self.__is_active = True
-        self.rect.x = pos[0]
-        self.rect.y = pos[1]
-        self.rect.h = 1
-        self.rect.w = 1
+        self._rect.x = pos[0]
+        self._rect.y = pos[1]
+        self._rect.h = 1
+        self._rect.w = 1
         self.tracked_corner = [0, 0]
 
     def finish_selection(self):
@@ -28,25 +28,25 @@ class SelectionRect:
         self.__is_finished = True
 
     def drag_selection(self, pos):
-        self.rect.w = pos[0] - self.rect.x
-        self.rect.h = pos[1] - self.rect.y
+        self._rect.w = pos[0] - self._rect.x
+        self._rect.h = pos[1] - self._rect.y
 
-        if self.rect.w < 0 and not self.tracked_corner[0]:
+        if self._rect.w < 0 and not self.tracked_corner[0]:
             self.tracked_corner[0] ^= 1
-        if self.rect.w > 0 and self.tracked_corner[0]:
+        if self._rect.w > 0 and self.tracked_corner[0]:
             self.tracked_corner[0] ^= 1
-        if self.rect.h < 0 and not self.tracked_corner[1]:
+        if self._rect.h < 0 and not self.tracked_corner[1]:
             self.tracked_corner[1] ^= 1
-        if self.rect.h > 0 and self.tracked_corner[1]:
+        if self._rect.h > 0 and self.tracked_corner[1]:
             self.tracked_corner[1] ^= 1
 
     def get_rect(self):
-        rect = deepcopy(self.rect)
+        rect = deepcopy(self._rect)
         if self.tracked_corner[0]:
-            rect.x += self.rect.w
+            rect.x += self._rect.w
             rect.w *= -1
         if self.tracked_corner[1]:
-            rect.y += self.rect.h
+            rect.y += self._rect.h
             rect.h *= -1
         return rect
 

@@ -1,13 +1,7 @@
-import pygame
 import pygame.locals
-from pygame.locals import Rect
-import os
-import math
-from abc import ABC, abstractmethod
-from factory import *
-from Constants import *
 from World import *
 from SelectionRect import *
+import sys
 
 
 def process_events(world: World, selection_rect: SelectionRect, menu: Menu):
@@ -18,7 +12,6 @@ def process_events(world: World, selection_rect: SelectionRect, menu: Menu):
             return False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-
                 selection_rect.start_selection(event.pos)
                 world.left_click(event.pos)
             elif event.button == 3:
@@ -37,7 +30,7 @@ def main():
     pygame.display.set_caption("AgeOfPixels")
 
     # Create background
-    grass = pygame.image.load('images/sand.jpg')
+    grass = pygame.image.load(os.path.join(IMAGES_FOLDER, 'sand.jpg'))
 
     clock = pygame.time.Clock()
     world = World(screen)
@@ -58,9 +51,9 @@ def main():
         if selection_rect.is_selection_active():
             selection_rect.render(screen)
 
-        # if selection_rect.is_selection_finished():
-        #     world.select_objects(selection_rect)
-        #     selection_rect.mark_as_used()
+        if selection_rect.is_selection_finished():
+            world.select_objects(selection_rect.get_rect())
+            selection_rect.mark_as_used()
 
         pygame.display.flip()
         pygame.time.delay(1)
@@ -68,5 +61,4 @@ def main():
 
 
 if __name__ == "__main__":
-    import sys
     sys.exit(main())
