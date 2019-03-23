@@ -43,10 +43,25 @@ class Man(GameObject):
             )
         )
         self._world = world
-        self._bbox = CircleBBox(coordinates[0], coordinates[1], 3)
+        print(coordinates[0], self._image.get_width() / 2)
+        self._bbox = CircleBBox(coordinates[0] + self._image.get_width() / 2,
+                                coordinates[1] + self._image.get_height() / 2,
+                                3)
 
     def render(self):
-        self._screen.blit(self._image, (self._bbox.x, self._bbox.y + self._sprite_offset))
+        if self._is_selected:
+            pygame.draw.ellipse(self._screen,
+                                (255, 255, 255),
+                                Rect(
+                                    self._bbox.x - (self._image.get_width() * 1.6 / 2),
+                                    self._bbox.y + self._image.get_height() / 2 - 8 / 2 + self._sprite_offset,
+                                    self._image.get_width() * 1.6,
+                                    8),
+                                2)
+
+        self._screen.blit(self._image,
+                          (self._bbox.x - self._image.get_width() / 2,
+                           self._bbox.y + self._sprite_offset - self._image.get_height() / 2))
 
     def animate_go_to(self, delta_t):
         if self._moving:
@@ -100,6 +115,7 @@ class Car(GameObject):
 
 class Building(GameObject):
     _image: pygame.Surface
+
     # height = image.get_height()
 
     def __init__(self, screen):
@@ -147,5 +163,3 @@ class BuildingWorker(Building):
 
     def get_ore(self):
         pass
-
-
