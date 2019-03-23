@@ -1,6 +1,6 @@
 .idea/*
 venv/*
-
+__pycache__/*
 # CMake
 cmake-build-*/
 
