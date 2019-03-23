@@ -27,8 +27,10 @@ class GameObject(ABC):
 
 class Man(GameObject):
     speed = 250
-    target = None
+    _target = None
     _moving = False
+    _sprite_offset = 0
+    _bbox: CircleBBox
 
     def __init__(self, screen, world, coordinates):
         self._screen = screen
@@ -44,27 +46,39 @@ class Man(GameObject):
         self._bbox = CircleBBox(coordinates[0], coordinates[1], 3)
 
     def render(self):
-        self._screen.blit(self._image, (self._bbox.x, self._bbox.y))
+        self._screen.blit(self._image, (self._bbox.x, self._bbox.y + self._sprite_offset))
 
     def animate_go_to(self, delta_t):
-        new_bbox = deepcopy(self._bbox)
-        new_bbox.x += self.speed * math.sin(
-            math.atan2(self.target[0] - self._bbox.x,
-                       self.target[1] - self._bbox.y)) * delta_t
-        new_bbox.y += self.speed * math.cos(
-            math.atan2(self.target[0] - self._bbox.x,
-                       self.target[1] - self._bbox.y)) * delta_t
+        if self._moving:
+            new_bbox = deepcopy(self._bbox)
+            new_bbox.x += self.speed * math.sin(
+                math.atan2(self._target[0] - self._bbox.x,
+                           self._target[1] - self._bbox.y)) * delta_t
+            new_bbox.y += self.speed * math.cos(
+                math.atan2(self._target[0] - self._bbox.x,
+                           self._target[1] - self._bbox.y)) * delta_t
 
-        # Check for collisions with others
-        if self._world.request_move(self, new_bbox):
-            self._bbox = new_bbox
+            # Moving ended
+            target_bbox = CircleBBox(self._target[0], self._target[1], 0)
+            if self._bbox.distance_to(target_bbox) < self.speed * delta_t:
+                self._moving = False
+
+            # Check for collisions with others
+            if self._world.request_move(self, new_bbox):
+                self._bbox = new_bbox
+            else:
+                self._moving = False
+
+            # Jumping animation
+            self._sprite_offset = 5 if self._sprite_offset == 0 else 0
 
     def step(self, delta_t):
-        if self.target is not None:
+        if self._moving is not None:
             self.animate_go_to(delta_t)
 
     def go_to(self, target):
-        self.target = target
+        self._target = target
+        self._moving = True
 
     def get_y(self):
         return self._bbox.y
@@ -77,6 +91,7 @@ class Man(GameObject):
 
     def get_is_selected(self):
         return self._is_selected
+
 
 class Car(GameObject):
     speed: int
