@@ -70,6 +70,8 @@ def main():
             players[0].selection_rect_finished(selection_rect.get_rect())
             selection_rect.mark_as_used()
 
+        menu.render_fps(int(clock.get_fps()))
+
         pygame.display.flip()
         pygame.time.delay(1)
         screen.blit(grass, (0, 0))
