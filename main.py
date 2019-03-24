@@ -4,17 +4,20 @@ from SelectionRect import *
 import sys
 
 
-def process_events(world: World, player: Player, selection_rect: SelectionRect, menu: Menu):
+def process_events(world: World, player: HumanPlayer, selection_rect: SelectionRect, menu: Menu):
     for event in pygame.event.get():
         if event.type == pygame.locals.QUIT or \
                 (event.type == pygame.locals.KEYDOWN and
                  event.key == pygame.locals.K_ESCAPE):
             return False
+        elif event.type == pygame.locals.KEYDOWN:
+            if event.key == pygame.locals.K_DELETE:
+                player.delete_button()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
+            if event.button == 1: # Left mouse button
                 selection_rect.start_selection(event.pos)
                 player.left_click(event.pos)
-            elif event.button == 3:
+            elif event.button == 3: # Ring mouse button
                 player.right_click(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:

@@ -21,9 +21,12 @@ class DebugObject(GameObject):
 
 class World:
     objects: List[GameObject] = []
-    selected_objects = []
+    alive_objects: List[GameObject] = []
+    selected_objects: List[GameObject] = []
+    debug_objects: List[GameObject] = []
+    dying_objects: List[GameObject] = []
+
     bbox: CircleBBox
-    debug_objects = []
     players: List[Player]
 
     def __init__(self, screen: pygame.Surface):
@@ -33,8 +36,21 @@ class World:
         self.bbox = CircleBBox(c[0] / 2, c[1] / 2, c[1] / 2)
 
     def step(self, elapsed_time):
-        for obj in self.objects:
+        for obj in self.alive_objects:
+            # Filtering out dying objects
+            if obj.is_dying():
+                self.alive_objects.remove(obj)
+                self.dying_objects.append(obj)
+                try:
+                    self.selected_objects.remove(obj)
+                except ValueError:
+                    pass
             obj.step(elapsed_time)
+
+        for obj in self.dying_objects:
+            if obj.is_dead():
+                self.dying_objects.remove(obj)
+                self.objects.remove(obj)
 
     def render(self):
         self.objects.sort(key=lambda x: x.get_y())
@@ -45,7 +61,9 @@ class World:
             obj.render()
 
     def create_man(self, player, pos):
-        self.objects.append(Man(self.screen, self, pos, player))
+        man = Man(self.screen, self, pos, player)
+        self.objects.append(man)
+        self.alive_objects.append(man)
 
     def move_selected(self, player, mouse_pos):
         if len(self.selected_objects) == 0:
@@ -86,14 +104,19 @@ class World:
         if rect.w < 2 and rect.h < 2:
             # Click case
             mouse_bbox = CircleBBox(rect.x, rect.y, PIXEL_SCALE * 2)
-            for obj in self.objects:
-                if obj.get_bbox().is_collision(mouse_bbox):
-                    self.selected_objects = [obj]
-                    obj.set_is_selected(True)
-                    return
+            min_dist = 999999
+            min_object = None
+            for obj2 in self.alive_objects:
+                dist = mouse_bbox.distance_to(obj2.get_bbox())
+                if min_dist > dist:
+                    min_dist = dist
+                    min_object = obj2
+            if min_dist <= 20:
+                self.selected_objects = [min_object]
+                min_object.set_is_selected(True)
         else:
             # Rect case
-            for obj in self.objects:
+            for obj in self.alive_objects:
                 if rect.collidepoint(obj.get_bbox().x, obj.get_bbox().y):
                     self.selected_objects.append(obj)
                     obj.set_is_selected(True)
@@ -102,7 +125,7 @@ class World:
         if not bbox1.is_collision(self.bbox) and \
                 obj.get_bbox().is_collision(self.bbox):
             return False
-        '''for i in self.objects:
+        '''for i in self.alive_objects:
             bbox2 = i.get_bbox()
             if i != obj and \
                     bbox1.is_collision(bbox2) and \
@@ -115,10 +138,14 @@ class World:
         obj_owner = obj.get_owner()
         min_dist = 999999
         min_object = None
-        for obj2 in self.objects:
+        for obj2 in self.alive_objects:
             if obj_owner != obj2.get_owner():
                 dist = obj.get_bbox().distance_to(obj2.get_bbox())
                 if min_dist > dist:
                     min_dist = dist
                     min_object = obj2
         return min_object if min_dist <= obj.get_line_of_sight() else None
+
+    def remove_selected(self):
+        for obj in self.selected_objects:
+            obj.set_health(obj.get_health() - 10)
