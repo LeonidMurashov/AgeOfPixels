@@ -6,6 +6,7 @@ class Player:
     _name: str
     _age: str
     _resources = {}
+    _ore = 0
 
     def __init__(self, world, name):
         self.world = world
@@ -36,7 +37,7 @@ class HumanPlayer(Player):
 
     def create_army(self, num):
         for i in range(num):
-            self.world.create_man(self, [random.randint(300, 1800), random.randint(300, 800)])
+            self.world.create_man(self, [random.randint(350, 1800), random.randint(300, 800)])
 
     def delete_button(self):
         self.world.remove_selected()

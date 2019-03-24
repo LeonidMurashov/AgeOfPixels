@@ -197,7 +197,7 @@ class Car(GameObject):
 class Building(GameObject):
     _image: pygame.Surface
 
-    # height = image.get_height()
+    _height: int
 
     def __init__(self, screen):
         self._screen = screen
@@ -212,7 +212,7 @@ class Building(GameObject):
 
 class ManWorker(Man):
     def take_an_object(self):
-        return 0
+        pass
 
 
 class ManWarrior(Man):
@@ -244,3 +244,41 @@ class BuildingWorker(Building):
 
     def get_ore(self):
         pass
+
+
+class Ore(GameObject):
+    _moving = False
+    _chasing_object: GameObject = None
+    _bbox: CircleBBox
+
+    def __init__(self, screen, world, coordinates):
+        self._screen = screen
+        self._world = world
+
+        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'ore.png'))
+        self._image = pygame.transform.scale(
+            self._image,
+            (
+                self._image.get_size()[0] * PIXEL_SCALE,
+                self._image.get_size()[1] * PIXEL_SCALE
+            )
+        )
+
+        self._bbox = CircleBBox(coordinates[0] + self._image.get_width() / 2,
+                                coordinates[1] + self._image.get_height() / 2,
+                                10)
+
+    def render(self):
+        if self._world.check_ore_collision(self):
+            self._world.objects.remove(self)
+            return
+        self._screen.blit(self._image, (self._bbox.x, self._bbox.y))
+
+    def step(self, delta_t):
+        pass
+
+    def is_dead(self):
+        pass
+
+    def get_y(self):
+        return self._bbox.y

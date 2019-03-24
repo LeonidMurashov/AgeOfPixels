@@ -149,3 +149,12 @@ class World:
     def remove_selected(self):
         for obj in self.selected_objects:
             obj.set_health(obj.get_health() - 10)
+
+    def create_ore(self):
+        self.objects.append(Ore(self.screen, self, [random.randint(350, 1800), random.randint(300, 800)]))
+
+    def check_ore_collision(self, ore):
+        for i in self.alive_objects:
+            bbox1 = i.get_bbox()
+            if ore.get_bbox().is_collision(bbox1):
+                return True
