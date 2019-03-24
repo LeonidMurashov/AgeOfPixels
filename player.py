@@ -1,4 +1,5 @@
 from World import *
+import random
 
 
 class Player:
@@ -32,3 +33,7 @@ class HumanPlayer(Player):
         for i in range(14):
             for j in range(14):
                 self.world.create_man(self, [300 + i * 50, 300 + j * 50])
+
+    def create_army(self, num):
+        for i in range(num):
+            self.world.create_man(self, [random.randint(300, 1800), random.randint(300, 800)])

@@ -37,8 +37,10 @@ def main():
     menu = Menu(screen)
     selection_rect = SelectionRect()
 
-    players = [HumanPlayer(world, 'Player'), AIPlayer(world, 'Enemy')]
+    players = [HumanPlayer(world, 'Player'), HumanPlayer(world, 'Player1')]
     players[0].act()
+    #players[0].create_army(1)
+    #players[1].create_army(1)
 
     while True:
         elapsed_time = clock.tick_busy_loop() / 1000

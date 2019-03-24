@@ -1,6 +1,7 @@
 from BBox import *
 from factory import *
 from typing import List
+from player import Player
 
 
 class DebugObject(GameObject):
@@ -19,7 +20,7 @@ class DebugObject(GameObject):
 
 
 class World:
-    objects = []
+    objects: List[GameObject] = []
     selected_objects = []
     bbox: CircleBBox
     debug_objects = []
@@ -44,7 +45,7 @@ class World:
             obj.render()
 
     def create_man(self, player, pos):
-        self.objects.append(Man(self.screen, self, pos))
+        self.objects.append(Man(self.screen, self, pos, player))
 
     def move_selected(self, player, mouse_pos):
         if len(self.selected_objects) == 0:
@@ -74,7 +75,8 @@ class World:
 
         # Move units
         for i, obj in enumerate(self.selected_objects):
-            obj.go_to(positions[i])
+            if isinstance(obj, Man) or isinstance(obj, Car):
+                obj.go_to(positions[i])
 
     def select_objects(self, player, rect: pygame.Rect):
         for obj in self.selected_objects:
@@ -108,3 +110,15 @@ class World:
                 return False
         '''
         return True
+
+    def find_closest_enemy(self, obj: Man):
+        obj_owner = obj.get_owner()
+        min_dist = 999999
+        min_object = None
+        for obj2 in self.objects:
+            if obj_owner != obj2.get_owner():
+                dist = obj.get_bbox().distance_to(obj2.get_bbox())
+                if min_dist > dist:
+                    min_dist = dist
+                    min_object = obj2
+        return min_object if min_dist <= obj.get_line_of_sight() else None

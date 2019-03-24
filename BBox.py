@@ -1,6 +1,21 @@
 import math
+from abc import abstractmethod
 
-class CircleBBox:
+
+class BBox:
+    x: float
+    y: float
+
+    @abstractmethod
+    def is_collision(self, bbox):
+        pass
+
+    @abstractmethod
+    def distance_to(self, bbox):
+        pass
+
+
+class CircleBBox(BBox):
     """
     circle bounding box
     """
