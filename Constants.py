@@ -1,6 +1,6 @@
 from pygame.locals import Rect
 
-SCREEN_RECT = Rect(0, 0, 1920, 1080)
+SCREEN_RECT: Rect
 IMAGES_FOLDER = 'images'
 PIXEL_SCALE = 10
 

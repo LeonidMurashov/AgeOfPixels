@@ -29,6 +29,11 @@ def process_events(world: World, player: HumanPlayer, selection_rect: SelectionR
 
 
 def main():
+    global SCREEN_RECT
+    pygame.init()
+
+    info_object = pygame.display.Info()
+    SCREEN_RECT = Rect(0, 0, info_object.current_w, info_object.current_h)
     screen = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN)
     pygame.display.set_caption("AgeOfPixels")
 
