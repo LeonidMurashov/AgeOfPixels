@@ -7,11 +7,11 @@ import pygame
 from pygame.locals import Rect
 import os
 import math
-import random
-import time
+from player import *
 
 
 class GameObject(ABC):
+    _owner: Player
     _is_selected: bool = False
     _image: pygame.Surface
     _screen: pygame.Surface
@@ -43,7 +43,6 @@ class Man(GameObject):
             )
         )
         self._world = world
-        print(coordinates[0], self._image.get_width() / 2)
         self._bbox = CircleBBox(coordinates[0] + self._image.get_width() / 2,
                                 coordinates[1] + self._image.get_height() / 2,
                                 3)
@@ -78,7 +77,7 @@ class Man(GameObject):
             if self._bbox.distance_to(target_bbox) < self.speed * delta_t:
                 self._moving = False
 
-            # Check for collisions with others
+            # Check for collisions with world bounds
             if self._world.request_move(self, new_bbox):
                 self._bbox = new_bbox
             else:

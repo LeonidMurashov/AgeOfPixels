@@ -4,7 +4,7 @@ from SelectionRect import *
 import sys
 
 
-def process_events(world: World, selection_rect: SelectionRect, menu: Menu):
+def process_events(world: World, player: Player, selection_rect: SelectionRect, menu: Menu):
     for event in pygame.event.get():
         if event.type == pygame.locals.QUIT or \
                 (event.type == pygame.locals.KEYDOWN and
@@ -13,9 +13,9 @@ def process_events(world: World, selection_rect: SelectionRect, menu: Menu):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 selection_rect.start_selection(event.pos)
-                world.left_click(event.pos)
+                player.left_click(event.pos)
             elif event.button == 3:
-                world.right_click(event.pos)
+                player.right_click(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 selection_rect.finish_selection()
@@ -35,12 +35,15 @@ def main():
     clock = pygame.time.Clock()
     world = World(screen)
     menu = Menu(screen)
-
     selection_rect = SelectionRect()
+
+    players = [HumanPlayer(world, 'Player'), AIPlayer(world, 'Enemy')]
+    players[0].act()
+
     while True:
         elapsed_time = clock.tick_busy_loop() / 1000
 
-        rc = process_events(world, selection_rect, menu)
+        rc = process_events(world, players[0], selection_rect, menu)
         if not rc:
             return
 
@@ -52,7 +55,7 @@ def main():
             selection_rect.render(screen)
 
         if selection_rect.is_selection_finished():
-            world.select_objects(selection_rect.get_rect())
+            players[0].selection_rect_finished(selection_rect.get_rect())
             selection_rect.mark_as_used()
 
         pygame.display.flip()
