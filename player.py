@@ -31,9 +31,10 @@ class HumanPlayer(Player):
         pass
 
     def act(self):
-        for i in range(14):
-            for j in range(14):
-                self.world.create_man(self, [300 + i * 50, 300 + j * 50])
+        for i in range(5):
+            for j in range(5):
+                self.world.create_man_worker(self, [300 + i * 50, 300 + j * 50])
+                self.world.create_man_warrior(self, [600 + i * 50, 300 + j * 50])
 
     def create_army(self, num):
         for i in range(num):

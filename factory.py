@@ -1,4 +1,3 @@
-from Menu import *
 from Constants import *
 from copy import deepcopy
 from BBox import *
@@ -54,7 +53,7 @@ class GameObject(ABC):
         self._health = val
 
 
-class Man(GameObject):
+class Man(GameObject, ABC):
     _speed = 150
     _line_of_sight = 200
     _target = None
@@ -66,13 +65,14 @@ class Man(GameObject):
     _max_health = 100
     _health = _max_health
     _death_animation_steps = 60
+    _sprite_name: str
 
     def __init__(self, screen, world, coordinates, owner):
         self._screen = screen
         self._world = world
         self._owner = owner
 
-        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'man.png'))
+        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, self._sprite_name)).convert()
         self._image = pygame.transform.scale(
             self._image,
             (
@@ -211,11 +211,15 @@ class Building(GameObject):
 
 
 class ManWorker(Man):
+    _sprite_name = 'worker.bmp'
+
     def take_an_object(self):
         pass
 
 
 class ManWarrior(Man):
+    _sprite_name = 'warrior.bmp'
+
     def attack(self):
         pass
 
@@ -255,7 +259,7 @@ class Ore(GameObject):
         self._screen = screen
         self._world = world
 
-        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'ore.png'))
+        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'ore.png')).convert()
         self._image = pygame.transform.scale(
             self._image,
             (

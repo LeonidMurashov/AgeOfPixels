@@ -60,8 +60,13 @@ class World:
         for obj in self.debug_objects:
             obj.render()
 
-    def create_man(self, player, pos):
-        man = Man(self.screen, self, pos, player)
+    def create_man_worker(self, player, pos):
+        man = ManWorker(self.screen, self, pos, player)
+        self.objects.append(man)
+        self.alive_objects.append(man)
+
+    def create_man_warrior(self, player, pos):
+        man = ManWarrior(self.screen, self, pos, player)
         self.objects.append(man)
         self.alive_objects.append(man)
 
@@ -154,7 +159,22 @@ class World:
         self.objects.append(Ore(self.screen, self, [random.randint(350, 1800), random.randint(300, 800)]))
 
     def check_ore_collision(self, ore):
-        for i in self.alive_objects:
+        for i in self.selected_objects:
             bbox1 = i.get_bbox()
             if ore.get_bbox().is_collision(bbox1):
                 return True
+
+    def get_selected_type(self):
+        selected_type = 0
+        for i in self.selected_objects:
+            if type(i) == ManWorker:
+                selected_type = ManWorker
+                break
+
+            if type(i) == ManWarrior:
+                selected_type = ManWarrior
+
+            if type(i) == ManBuilder:
+                selected_type = ManBuilder
+
+        return selected_type

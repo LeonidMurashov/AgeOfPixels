@@ -2,6 +2,7 @@ import pygame.locals
 from World import *
 from SelectionRect import *
 import sys
+from Menu import *
 
 
 def process_events(world: World, player: HumanPlayer, selection_rect: SelectionRect, menu: Menu):
@@ -14,10 +15,10 @@ def process_events(world: World, player: HumanPlayer, selection_rect: SelectionR
             if event.key == pygame.locals.K_DELETE:
                 player.delete_button()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1: # Left mouse button
+            if event.button == 1:  # Left mouse button
                 selection_rect.start_selection(event.pos)
                 player.left_click(event.pos)
-            elif event.button == 3: # Ring mouse button
+            elif event.button == 3:  # Ring mouse button
                 player.right_click(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
@@ -38,20 +39,20 @@ def main():
     pygame.display.set_caption("AgeOfPixels")
 
     # Create background
-    grass = pygame.image.load(os.path.join(IMAGES_FOLDER, 'sand.jpg'))
+    grass = pygame.image.load(os.path.join(IMAGES_FOLDER, 'sand.jpg')).convert()
 
     clock = pygame.time.Clock()
     world = World(screen)
-    menu = Menu(screen)
+    menu = Menu(screen, world)
     selection_rect = SelectionRect()
 
     players = [HumanPlayer(world, 'Player'), HumanPlayer(world, 'Player1')]
     players[0].act()
-    #players[0].create_army(1)
-    #players[1].create_army(1)
+    # players[0].create_army(1)
+    # players[1].create_army(1)
+
     for i in range(100):
         world.create_ore()
-
     while True:
         elapsed_time = clock.tick_busy_loop() / 1000
 
