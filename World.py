@@ -70,6 +70,16 @@ class World:
         self.objects.append(man)
         self.alive_objects.append(man)
 
+    def create_man_builder(self, player, pos):
+        man = ManBuilder(self.screen, self, pos, player)
+        self.objects.append(man)
+        self.alive_objects.append(man)
+
+    def create_car(self, player, pos):
+        man = CarWarrior(self.screen, self, pos, player)
+        self.objects.append(man)
+        self.alive_objects.append(man)
+
     def move_selected(self, player, mouse_pos):
         if len(self.selected_objects) == 0:
             return
