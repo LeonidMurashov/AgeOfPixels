@@ -177,6 +177,7 @@ class World:
     def get_selected_type(self):
         selected_type = 0
         for i in self.selected_objects:
+            # TODO: rewrite to isinstance
             if type(i) == ManWorker:
                 selected_type = ManWorker
                 break

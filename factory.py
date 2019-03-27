@@ -66,6 +66,7 @@ class Man(GameObject, ABC):
     _health = _max_health
     _death_animation_steps = 60
     _sprite_name: str
+    _time = 0
 
     def __init__(self, screen, world, coordinates, owner):
         self._screen = screen
@@ -95,7 +96,7 @@ class Man(GameObject, ABC):
                                         self._bbox.x - (self._image.get_width() * 1.6 / 2),
                                         self._bbox.y + self._image.get_height() / 2 - 8 / 2 + self._sprite_offset,
                                         self._image.get_width() * 1.6,
-                                        8),
+                                        10),
                                     2)
 
             # Draw unit
@@ -148,7 +149,7 @@ class Man(GameObject, ABC):
                 self._bbox = new_bbox
 
                 # Jumping animation
-                self._sprite_offset = 5 if self._sprite_offset == 0 else 0
+                self._sprite_offset = 2 * ((self._time * 20) % 5)
 
     def step(self, delta_t):
         if self._health > 0:
@@ -172,6 +173,7 @@ class Man(GameObject, ABC):
                 # TODO: Death sound, etc..
                 self._dying = True
 
+        self._time += delta_t
         self._step_counter = 0 if self._step_counter == 10 else self._step_counter + 1
 
     def go_to(self, target):
@@ -228,10 +230,10 @@ class Car(GameObject):
                 pygame.draw.ellipse(self._screen,
                                     (255, 255, 255),
                                     Rect(
-                                        self._bbox.x - (self._image.get_width() * 1.6 / 2),
+                                        self._bbox.x - (self._image.get_width() * 1.2 / 2),
                                         self._bbox.y + self._image.get_height() / 2 - 8 / 2 + self._sprite_offset,
-                                        self._image.get_width() * 1.6,
-                                        8),
+                                        self._image.get_width() * 1.2,
+                                        12),
                                     2)
 
             # Draw unit

@@ -18,7 +18,7 @@ def process_events(world: World, player: HumanPlayer, selection_rect: SelectionR
             if event.button == 1:  # Left mouse button
                 selection_rect.start_selection(event.pos)
                 player.left_click(event.pos)
-            elif event.button == 3:  # Ring mouse button
+            elif event.button == 3:  # Right mouse button
                 player.right_click(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
@@ -31,12 +31,15 @@ def process_events(world: World, player: HumanPlayer, selection_rect: SelectionR
 
 def main():
     global SCREEN_RECT
+
     pygame.init()
 
     info_object = pygame.display.Info()
     SCREEN_RECT = Rect(0, 0, info_object.current_w, info_object.current_h)
-    screen = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN)
+
+    screen: pygame.Surface = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("AgeOfPixels")
+
 
     # Create background
     grass = pygame.image.load(os.path.join(IMAGES_FOLDER, 'sand.jpg')).convert()
@@ -73,8 +76,12 @@ def main():
 
         menu.render_fps(int(clock.get_fps()))
 
+        mouse_pos = pygame.mouse.get_pos()
+        print(mouse_pos)
+
         pygame.display.flip()
         pygame.time.delay(1)
+        screen.fill(1)
         screen.blit(grass, (0, 0))
 
 
