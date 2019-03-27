@@ -33,7 +33,7 @@ class Menu:
         else:
             text = self.comic_sans.render('FPS: {}'.format(fps), True, (255, 255, 0))
 
-        self.screen.blit(text, (350, 200))
+        self.screen.blit(text, (10, 0))
 
     def get_information(self):
         selected_type = self.world.get_selected_type()

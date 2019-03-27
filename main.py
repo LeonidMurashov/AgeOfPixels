@@ -77,7 +77,7 @@ def main():
         menu.render_fps(int(clock.get_fps()))
 
         mouse_pos = pygame.mouse.get_pos()
-        print(mouse_pos)
+
 
         pygame.display.flip()
         pygame.time.delay(1)

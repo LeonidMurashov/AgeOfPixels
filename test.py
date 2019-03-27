@@ -1,88 +1,69 @@
-import pygame
+import sys
 
-# --- constants --- (UPPER_CASE names)
+import pygame as pg
 
-SCREEN_WIDTH = 430
-SCREEN_HEIGHT = 410
 
-#BLACK = (  0,   0,   0)
-WHITE = (255, 255, 255)
-RED   = (255,   0,   0)
+class Game(object):
+    def __init__(self, screen_size):
+        self.done = False
+        self.screen = pg.display.set_mode(screen_size)
+        self.clock = pg.time.Clock()
+        self.fps = 60
+        self.bg_size = 2000, 720
+        # the original background image
+        self.bg_image = pg.Surface(self.bg_size)
+        self.bg_image.fill(pg.Color("gray5"))
+        pg.draw.circle(self.bg_image, pg.Color("red"), (500, 300), 100)
+        pg.draw.circle(self.bg_image, pg.Color("blue"), (1000, 500), 100)
+        pg.draw.circle(self.bg_image, pg.Color("green"), (1100, 300), 100)
+        pg.draw.circle(self.bg_image, pg.Color("purple"), (1850, 200), 100)
+        # the surface we'll actually draw to the screen as the background
+        self.bg = pg.Surface(screen_size)
+        # this rect will track what portions of the background need to be drawn
+        self.bg_rect = self.bg.get_rect()
+        self.scroll_time = 10  # move background 1 pixel every 10 milliseconds
+        self.timer = 0
 
-FPS = 30
+    def event_loop(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                self.done = True
 
-# --- classses --- (CamelCase names)
+    def update(self, dt):
+        self.timer += dt
+        while self.timer >= self.scroll_time:
+            self.timer -= self.scroll_time
+            self.bg_rect.left += 1
 
-# empty
+        if self.bg_rect.left >= self.bg_size[0]:
+            self.bg_rect.left = self.bg_rect.left - self.bg_size[0]
+        if self.bg_rect.right > self.bg_size[0]:
+            left_rect = pg.Rect(self.bg_rect.topleft,
+                                (self.bg_size[0] - self.bg_rect.left, self.bg_rect.height))
+            right_rect = pg.Rect(0, self.bg_rect.top,
+                                 self.bg_rect.right - self.bg_size[0], self.bg_rect.height)
+            left = self.bg_image.subsurface(left_rect)
+            right = self.bg_image.subsurface(right_rect)
+            self.bg.blit(left, (0, 0))
+            self.bg.blit(right, (left_rect.width, 0))
+        else:
+            subsurf = self.bg_image.subsurface(self.bg_rect)
+            self.bg.blit(subsurf, (0, 0))
 
-# --- functions --- (lower_case names)
+    def draw(self):
+        self.screen.blit(self.bg, (0, 0))
 
-# empty
+    def run(self):
+        while not self.done:
+            dt = self.clock.tick(self.fps)
+            self.event_loop()
+            self.update(dt)
+            self.draw()
+            pg.display.update()
 
-# --- main ---
 
-# - init -
-
-pygame.init()
-
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-#screen_rect = screen.get_rect()
-
-pygame.display.set_caption("Tracking System")
-
-# - objects -
-
-rectangle = pygame.rect.Rect(176, 134, 17, 17)
-rectangle_draging = False
-
-# - mainloop -
-
-clock = pygame.time.Clock()
-
-running = True
-
-while running:
-
-    # - events -
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                if rectangle.collidepoint(event.pos):
-                    rectangle_draging = True
-                    mouse_x, mouse_y = event.pos
-                    offset_x = rectangle.x - mouse_x
-                    offset_y = rectangle.y - mouse_y
-
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                rectangle_draging = False
-
-        elif event.type == pygame.MOUSEMOTION:
-            if rectangle_draging:
-                mouse_x, mouse_y = event.pos
-                rectangle.x = mouse_x + offset_x
-                rectangle.y = mouse_y + offset_y
-
-    # - updates (without draws) -
-
-    # empty
-
-    # - draws (without updates) -
-
-    screen.fill(WHITE)
-
-    pygame.draw.rect(screen, RED, rectangle)
-
-    pygame.display.flip()
-
-    # - constant game speed / FPS -
-
-    clock.tick(FPS)
-
-# - end -
-
-pygame.quit()
+if __name__ == "__main__":
+    game = Game((1280, 720))
+    game.run()
+    pg.quit()
+    sys.exit()
