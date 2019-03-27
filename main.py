@@ -32,14 +32,14 @@ def process_events(world: World, player: HumanPlayer, selection_rect: SelectionR
 def main():
     global SCREEN_RECT
 
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d, %d" % (0, 0)
     pygame.init()
 
     info_object = pygame.display.Info()
     SCREEN_RECT = Rect(0, 0, info_object.current_w, info_object.current_h)
 
-    screen: pygame.Surface = pygame.display.set_mode(SCREEN_RECT.size, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+    screen: pygame.Surface = pygame.display.set_mode(SCREEN_RECT.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("AgeOfPixels")
-
 
     # Create background
     grass = pygame.image.load(os.path.join(IMAGES_FOLDER, 'sand.jpg')).convert()
