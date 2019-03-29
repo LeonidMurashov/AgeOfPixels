@@ -15,4 +15,4 @@ python main.py
 Project's trello https://trello.com/b/BnsofYjN/ageofpixels
 
 ## Архитектура
-![UML диаграмма](https://github.com/LeonidMurashov/AgeOfPixels/blob/skeleton/UML%20diagram.svg)
+![UML диаграмма](https://github.com/LeonidMurashov/AgeOfPixels/blob/master/UML%20diagram.svg)
