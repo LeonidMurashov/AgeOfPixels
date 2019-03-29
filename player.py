@@ -40,8 +40,8 @@ class HumanPlayer(Player):
                 self.world.create_man("ManWorker", self, [300 + i * 50, 300 + j * 50])
                 self.world.create_man("ManBuilder", self, [600 + i * 50, 300 + j * 50])
                 self.world.create_man("ManWarrior", self, [900 + i * 50, 300 + j * 50])
-        self.world.create_car("CarWarrior", self, [1000, 300])
-        self.world.create_building("BuildingWarrior", self, [1000, 300])
+        self.world.create_car("CarWarrior", self, [1400, 300])
+        self.world.create_building("BuildingWarrior", self, [1200, 300])
 
     def create_army(self, num):
         for i in range(num):

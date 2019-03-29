@@ -80,26 +80,6 @@ class World:
         self.objects.append(building)
         self.alive_objects.append(building)
 
-    '''def create_man_worker(self, player, pos):
-        man = ManWorker(self.screen, self, pos, player)
-        self.objects.append(man)
-        self.alive_objects.append(man)
-
-    def create_man_warrior(self, player, pos):
-        man = ManWarrior(self.screen, self, pos, player)
-        self.objects.append(man)
-        self.alive_objects.append(man)
-
-    def create_man_builder(self, player, pos):
-        man = ManBuilder(self.screen, self, pos, player)
-        self.objects.append(man)
-        self.alive_objects.append(man)
-
-    def create_car(self, player, pos):
-        man = CarWarrior(self.screen, self, pos, player)
-        self.objects.append(man)
-        self.alive_objects.append(man)'''
-
     def move_selected(self, player, mouse_pos):
         if len(self.selected_objects) == 0:
             return
@@ -196,17 +176,5 @@ class World:
                 return True
 
     def get_selected_type(self):
-        selected_type = 0
-        for i in self.selected_objects:
-            # TODO: rewrite to isinstance
-            if type(i) == ManWorker:
-                selected_type = ManWorker
-                break
-
-            if type(i) == ManWarrior:
-                selected_type = ManWarrior
-
-            if type(i) == ManBuilder:
-                selected_type = ManBuilder
-
-        return selected_type
+        if self.selected_objects:
+            return type(self.selected_objects[0])
