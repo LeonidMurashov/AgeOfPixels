@@ -54,8 +54,6 @@ def main():
     # players[0].create_army(1)
     # players[1].create_army(1)
 
-    for i in range(100):
-        world.create_ore()
     while True:
         elapsed_time = clock.tick_busy_loop() / 1000
 

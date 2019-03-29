@@ -192,7 +192,7 @@ class Man(GameObject, ABC):
 
 
 class Car(GameObject):
-    _speed = 150
+    _speed = 400
     _line_of_sight = 200
     _target = None
     _moving = False
@@ -210,7 +210,7 @@ class Car(GameObject):
         self._world = world
         self._owner = owner
 
-        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, self._sprite_name)).convert()
+        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, self._sprite_name)).convert_alpha()
         self._image = pygame.transform.scale(
             self._image,
             (
@@ -284,9 +284,6 @@ class Car(GameObject):
             # Check for collisions with world bounds
             if self._world.request_move(self, new_bbox):
                 self._bbox = new_bbox
-
-                # Jumping animation
-                self._sprite_offset = 5 if self._sprite_offset == 0 else 0
 
     def step(self, delta_t):
         if self._health > 0:
@@ -365,7 +362,7 @@ class ManBuilder(Man):
 
 
 class CarWarrior(Car):
-    _sprite_name = 'car.bmp'
+    _sprite_name = 'car.png'
     def attack(self):
         pass
 
