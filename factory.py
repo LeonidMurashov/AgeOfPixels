@@ -54,6 +54,9 @@ class GameObject(ABC):
 
 
 class ManFactory:
+    """"
+    test
+    """
     def __init__(self, screen, world):
         self._screen = screen
         self._world = world
@@ -229,7 +232,7 @@ class Man(GameObject, ABC):
         return self._death_animation_steps <= 0
 
 
-class Car(GameObject):
+class Car(GameObject, ABC):
     _speed = 400
     _line_of_sight = 200
     _target = None
@@ -362,7 +365,7 @@ class Car(GameObject):
         return self._death_animation_steps <= 0
 
 
-class Building(GameObject):
+class Building(GameObject, ABC):
     _image: pygame.Surface
     _sprite_name: str
 
