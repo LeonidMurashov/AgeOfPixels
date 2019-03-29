@@ -15,5 +15,4 @@
 нажимая на правую кнопку мыши.
 
 ## Как запустить проект
-pip freeze > requirements.txt  
 pip install -r requirements.txt
