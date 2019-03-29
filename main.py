@@ -42,7 +42,7 @@ def main():
 
     ctypes.windll.user32.SetProcessDPIAware()
     true_res = (windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1))
-    screen: pygame.Surface = pygame.display.set_mode(true_res, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+    screen: pygame.Surface = pygame.display.set_mode(true_res, pygame.FULLSCREEN)
 
     pygame.display.set_caption("AgeOfPixels")
 
