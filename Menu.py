@@ -2,25 +2,26 @@ from factory import *
 import pygame
 import os
 from Constants import *
+from typing import Tuple
 
 
 class Menu:
-    coordinates = list()
-    coordinates.append(0)
-    coordinates.append(750)
+    coordinates: Tuple[int]
 
-    def __init__(self, screen, world):
+    def __init__(self, screen, world, screen_rect):
         self.world = world
-        self.main_image = pygame.image.load(os.path.join(IMAGES_FOLDER, 'menu.bmp')).convert()
+        self.main_image: pygame.Surface = pygame.image.load(os.path.join(IMAGES_FOLDER, 'menu.bmp')).convert()
         self._imageMW = pygame.image.load(os.path.join(IMAGES_FOLDER, 'typeworker.bmp')).convert()
         self._imageMWar = pygame.image.load(os.path.join(IMAGES_FOLDER, 'typewarrior.bmp')).convert()
         self._imageMB = pygame.image.load(os.path.join(IMAGES_FOLDER, 'typebuilder.bmp')).convert()
         self.screen = screen
-        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
 
         pygame.font.init()
         self.comic_sans = pygame.font.SysFont('Comic Sans MS', 30)
         self.text = self.comic_sans.render('Type:', True, (255, 255, 0))
+        self.coordinates = (0, screen_rect.h - self.main_image.get_height())
+        self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))
+        print(self.coordinates)
 
     def render(self):
         self.screen.blit(self.main_image, (self.coordinates[0], self.coordinates[1]))

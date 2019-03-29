@@ -137,10 +137,11 @@ class World:
                     obj.set_is_selected(True)
 
     def request_move(self, obj, bbox1):
+        '''
         if not bbox1.is_collision(self.bbox) and \
                 obj.get_bbox().is_collision(self.bbox):
             return False
-        '''for i in self.alive_objects:
+        for i in self.alive_objects:
             bbox2 = i.get_bbox()
             if i != obj and \
                     bbox1.is_collision(bbox2) and \

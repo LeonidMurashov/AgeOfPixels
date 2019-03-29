@@ -4,6 +4,8 @@ from SelectionRect import *
 import sys
 from Menu import *
 
+import ctypes
+from ctypes import windll
 
 def process_events(world: World, player: HumanPlayer, selection_rect: SelectionRect, menu: Menu):
     for event in pygame.event.get():
@@ -32,13 +34,15 @@ def process_events(world: World, player: HumanPlayer, selection_rect: SelectionR
 def main():
     global SCREEN_RECT
 
-    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d, %d" % (0, 0)
     pygame.init()
 
     info_object = pygame.display.Info()
     SCREEN_RECT = Rect(0, 0, info_object.current_w, info_object.current_h)
 
-    screen: pygame.Surface = pygame.display.set_mode(SCREEN_RECT.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+    ctypes.windll.user32.SetProcessDPIAware()
+    true_res = (windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1))
+    screen: pygame.Surface = pygame.display.set_mode(true_res, pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+
     pygame.display.set_caption("AgeOfPixels")
 
     # Create background
@@ -46,7 +50,7 @@ def main():
 
     clock = pygame.time.Clock()
     world = World(screen)
-    menu = Menu(screen, world)
+    menu = Menu(screen, world, SCREEN_RECT)
     selection_rect = SelectionRect()
 
     players = [HumanPlayer(world, 'Player'), HumanPlayer(world, 'Player1')]
@@ -75,7 +79,6 @@ def main():
         menu.render_fps(int(clock.get_fps()))
 
         mouse_pos = pygame.mouse.get_pos()
-
 
         pygame.display.flip()
         pygame.time.delay(1)

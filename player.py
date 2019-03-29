@@ -13,6 +13,10 @@ class Player:
         self._name = name
 
 
+class OnlinePlayer(Player):
+    pass
+
+
 class AIPlayer(Player):
     pass
 
@@ -37,7 +41,6 @@ class HumanPlayer(Player):
                 self.world.create_man_warrior(self, [600 + i * 50, 300 + j * 50])
                 self.world.create_man_builder(self, [900 + i * 50, 300 + j * 50])
         self.world.create_car(self, [1300, 300])
-
 
     def create_army(self, num):
         for i in range(num):
