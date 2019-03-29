@@ -10,3 +10,6 @@
 ## Как запустить проект
 pip install -r requirements.txt  
 python main.py
+
+## Архитектура
+![UML диаграмма](https://github.com/LeonidMurashov/AgeOfPixels/blob/skeleton/UML%20diagram.svg)
