@@ -45,7 +45,7 @@ class HumanPlayer(Player):
 
     def create_army(self, num):
         for i in range(num):
-            self.world.create_car('CarWarrior', self, [random.randint(1500, 1800), random.randint(300, 800)])
+            self.world.create_car('CarWorker', self, [random.randint(1500, 1800), random.randint(300, 800)])
 
     def delete_button(self):
         self.world.remove_selected()
