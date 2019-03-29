@@ -25,15 +25,20 @@ class World:
     selected_objects: List[GameObject] = []
     debug_objects: List[GameObject] = []
     dying_objects: List[GameObject] = []
-
     bbox: CircleBBox
     players: List[Player]
+    man_factory: ManFactory
+    car_factory: CarFactory
+    building_factory: BuildingFactory
 
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-
         c = screen.get_size()
         self.bbox = CircleBBox(c[0] / 2, c[1] / 2, c[1] / 2)
+        self.building_factory = BuildingFactory(screen, self)
+        self.car_factory = CarFactory(screen, self)
+        self.man_factory = ManFactory(screen, self)
+
 
     def step(self, elapsed_time):
         for obj in self.alive_objects:
@@ -60,7 +65,22 @@ class World:
         for obj in self.debug_objects:
             obj.render()
 
-    def create_man_worker(self, player, pos):
+    def create_man(self, name, player, pos):
+        man = self.man_factory.create_man(name, player, pos)
+        self.objects.append(man)
+        self.alive_objects.append(man)
+
+    def create_car(self, name, player, pos):
+        car = self.car_factory.create_car(name, player, pos)
+        self.objects.append(car)
+        self.alive_objects.append(car)
+
+    def create_building(self, name, player, pos):
+        building = self.building_factory.create_building(name, player, pos)
+        self.objects.append(building)
+        self.alive_objects.append(building)
+
+    '''def create_man_worker(self, player, pos):
         man = ManWorker(self.screen, self, pos, player)
         self.objects.append(man)
         self.alive_objects.append(man)
@@ -78,7 +98,7 @@ class World:
     def create_car(self, player, pos):
         man = CarWarrior(self.screen, self, pos, player)
         self.objects.append(man)
-        self.alive_objects.append(man)
+        self.alive_objects.append(man)'''
 
     def move_selected(self, player, mouse_pos):
         if len(self.selected_objects) == 0:
@@ -137,10 +157,10 @@ class World:
                     obj.set_is_selected(True)
 
     def request_move(self, obj, bbox1):
-        if not bbox1.is_collision(self.bbox) and \
+        '''if not bbox1.is_collision(self.bbox) and \
                 obj.get_bbox().is_collision(self.bbox):
             return False
-        '''for i in self.alive_objects:
+        for i in self.alive_objects:
             bbox2 = i.get_bbox()
             if i != obj and \
                     bbox1.is_collision(bbox2) and \
