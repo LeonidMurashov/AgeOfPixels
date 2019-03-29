@@ -11,5 +11,8 @@
 pip install -r requirements.txt  
 python main.py
 
+## Планы
+Project's trello https://trello.com/b/BnsofYjN/ageofpixels
+
 ## Архитектура
 ![UML диаграмма](https://github.com/LeonidMurashov/AgeOfPixels/blob/skeleton/UML%20diagram.svg)
