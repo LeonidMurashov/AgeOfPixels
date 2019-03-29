@@ -34,6 +34,7 @@ def process_events(world: World, player: HumanPlayer, selection_rect: SelectionR
 def main():
     global SCREEN_RECT
 
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d, %d" % (0, -1)
     pygame.init()
 
     info_object = pygame.display.Info()

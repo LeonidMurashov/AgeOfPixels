@@ -7,6 +7,7 @@ from typing import Tuple
 
 class Menu:
     coordinates: Tuple[int]
+    coordinates_type = [200, 50]
 
     def __init__(self, screen, world, screen_rect):
         self.world = world
@@ -39,8 +40,8 @@ class Menu:
     def get_information(self):
         selected_type = self.world.get_selected_type()
         if selected_type == ManWorker:
-            self.screen.blit(self._imageMW, (500, 770))
+            self.screen.blit(self._imageMW, self.coordinates_type)
         if selected_type == ManWarrior:
-            self.screen.blit(self._imageMWar, (500, 770))
+            self.screen.blit(self._imageMWar, self.coordinates_type)
         if selected_type == ManBuilder:
-            self.screen.blit(self._imageMB, (500, 770))
+            self.screen.blit(self._imageMB, self.coordinates_type)

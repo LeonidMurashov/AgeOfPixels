@@ -37,10 +37,11 @@ class HumanPlayer(Player):
     def act(self):
         for i in range(5):
             for j in range(5):
-                self.world.create_man_worker(self, [300 + i * 50, 300 + j * 50])
-                self.world.create_man_warrior(self, [600 + i * 50, 300 + j * 50])
-                self.world.create_man_builder(self, [900 + i * 50, 300 + j * 50])
-        self.world.create_car(self, [1300, 300])
+                self.world.create_man("ManWorker", self, [300 + i * 50, 300 + j * 50])
+                self.world.create_man("ManBuilder", self, [600 + i * 50, 300 + j * 50])
+                self.world.create_man("ManWarrior", self, [900 + i * 50, 300 + j * 50])
+        self.world.create_car("CarWarrior", self, [1000, 300])
+        self.world.create_building("BuildingWarrior", self, [1000, 300])
 
     def create_army(self, num):
         for i in range(num):

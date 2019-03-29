@@ -27,6 +27,10 @@ class GameObject(ABC):
     def step(self, delta_t):
         pass
 
+    @abstractmethod
+    def is_dead(self):
+        pass
+
     def get_owner(self):
         return self._owner
 
@@ -39,10 +43,6 @@ class GameObject(ABC):
     def get_is_selected(self):
         return self._is_selected
 
-    @abstractmethod
-    def is_dead(self):
-        pass
-
     def is_dying(self):
         return self._dying
 
@@ -51,6 +51,44 @@ class GameObject(ABC):
 
     def set_health(self, val):
         self._health = val
+
+
+class ManFactory:
+    def __init__(self, screen, world):
+        self._screen = screen
+        self._world = world
+
+    def create_man(self, name, player, coordinates):
+        if name == "ManWorker":
+            return ManWorker(self._screen, self._world, coordinates, player)
+        if name == "ManWarrior":
+            return ManWarrior(self._screen, self._world, coordinates, player)
+        if name == "ManBuilder":
+            return ManBuilder(self._screen, self._world, coordinates, player)
+
+
+class CarFactory:
+    def __init__(self, screen, world):
+        self._screen = screen
+        self._world = world
+
+    def create_car(self, name, player, coordinates):
+        if name == "CarWorker":
+            return CarWorker(self._screen, self._world, coordinates, player)
+        if name == "CarWarrior":
+            return CarWarrior(self._screen, self._world, coordinates, player)
+
+
+class BuildingFactory:
+    def __init__(self, screen, world):
+        self._screen = screen
+        self._world = world
+
+    def create_building(self, name, player, coordinates):
+        if name == "BuildingWorker":
+            return BuildingWorker(self._screen, self._world, coordinates, player)
+        if name == "BuildingWarrior":
+            return BuildingWarrior(self._screen, self._world, coordinates, player)
 
 
 class Man(GameObject, ABC):
@@ -326,18 +364,46 @@ class Car(GameObject):
 
 class Building(GameObject):
     _image: pygame.Surface
+    _sprite_name: str
 
-    _height: int
-
-    def __init__(self, screen):
+    def __init__(self, screen, world, coordinates, owner):
         self._screen = screen
+        self._world = world
+        self._owner = owner
 
-    def build_it(self):
-        for i in range(self.height):
-            crop_surf = pygame.transform.chop(self._image, (0, 0, 0, self.height - i))
-            self._screen.blit(crop_surf, (440, 440 - i))
-            pygame.display.flip()
-            self._screen.fill((255, 255, 255))
+        self._image = pygame.image.load(os.path.join(IMAGES_FOLDER, self._sprite_name)).convert_alpha()
+        self._image = pygame.transform.scale(
+            self._image,
+            (
+                self._image.get_size()[0] * PIXEL_SCALE,
+                self._image.get_size()[1] * PIXEL_SCALE
+            )
+        )
+        self._bbox = CircleBBox(coordinates[0] + self._image.get_width() / 2,
+                                coordinates[1] + self._image.get_height() / 2,
+                                3)
+        self._health = random.randint(1, 100)
+
+    def step(self, delta_t):
+        pass
+
+    def is_dead(self):
+        pass
+
+    def render(self):
+        self._screen.blit(self._image,
+                          (self._bbox.x - self._image.get_width() / 2,
+                           self._bbox.y - self._image.get_height() / 2))
+
+    def get_y(self):
+        return self._bbox.y
+
+    '''def build_it(self):
+            for i in range(self.height):
+                crop_surf = pygame.transform.chop(self._image, (0, 0, 0, self.height - i))
+                self._screen.blit(crop_surf, (440, 440 - i))
+                pygame.display.flip()
+                self._screen.fill((255, 255, 255))'''
 
 
 class ManWorker(Man):
@@ -362,22 +428,28 @@ class ManBuilder(Man):
 
 
 class CarWarrior(Car):
-    _sprite_name = 'car.png'
+    _sprite_name = 'carwar.png'
+
     def attack(self):
         pass
 
 
 class CarWorker(Car):
+    _sprite_name = 'car.png'
+
     def take_an_object(self):
         pass
 
 
 class BuildingWarrior(Building):
+    _sprite_name = "warbuilding.png"
+
     def attack(self):
         pass
 
 
 class BuildingWorker(Building):
+    _sprite_name = "building.png"
 
     def get_ore(self):
         pass
