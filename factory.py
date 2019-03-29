@@ -258,7 +258,7 @@ class Car(GameObject):
         )
         self._bbox = CircleBBox(coordinates[0] + self._image.get_width() / 2,
                                 coordinates[1] + self._image.get_height() / 2,
-                                3)
+                                100)
         self._health = random.randint(1, 100)
 
     def render(self):
